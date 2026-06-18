@@ -1,0 +1,128 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text To Speech Reader</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+
+        textarea{
+            width: 90%;
+            height: 150px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        select, input{
+            width: 90%;
+            margin-top: 15px;
+            padding: 10px;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .dark{
+            background: #222;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>Text To Speech Reader</h1>
+
+<textarea id="text" placeholder="Enter text here"></textarea>
+
+<select id="voiceList"></select>
+
+<label>Speed</label>
+<input type="range" id="speed" min="0.5" max="2" step="0.1" value="1">
+
+<br>
+
+<button onclick="speakText()">Speak</button>
+<button onclick="stopText()">Stop</button>
+<button onclick="clearText()">Clear</button>
+<button onclick="darkMode()">Dark Mode</button>
+
+</div>
+
+<script>
+
+let voices = [];
+let voiceList = document.getElementById("voiceList");
+
+function loadVoices() {
+
+    voices = speechSynthesis.getVoices();
+
+    voiceList.innerHTML = "";
+
+    voices.forEach((voice, index) => {
+
+        let option = document.createElement("option");
+
+        option.value = index;
+
+        option.textContent = voice.name + " (" + voice.lang + ")";
+
+        voiceList.appendChild(option);
+
+    });
+}
+
+speechSynthesis.onvoiceschanged = loadVoices;
+
+function speakText() {
+
+    let text = document.getElementById("text").value;
+
+    let speech = new SpeechSynthesisUtterance(text);
+
+    speech.voice = voices[voiceList.value];
+
+    speech.rate = document.getElementById("speed").value;
+
+    speechSynthesis.speak(speech);
+}
+
+function stopText() {
+
+    speechSynthesis.cancel();
+}
+
+function clearText() {
+
+    document.getElementById("text").value = "";
+}
+
+function darkMode() {
+
+    document.body.classList.toggle("dark");
+}
+loadVoices();
+
+</script>
+
+</body>
+</html>
